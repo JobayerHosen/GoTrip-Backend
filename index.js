@@ -40,7 +40,7 @@ async function run() {
           res.status(404).send("No Events Found");
         }
       } catch (err) {
-        res.status(500).send("interna server error: ", err);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -56,7 +56,7 @@ async function run() {
           res.status(404).send("No Event Found");
         }
       } catch (err) {
-        res.status(500).send("interna server error: ", err);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -73,7 +73,7 @@ async function run() {
           res.status(404).send("No Event Found");
         }
       } catch (err) {
-        res.status(500).send("interna server error: ", err);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -93,7 +93,7 @@ async function run() {
           throw new Error("Could not add User");
         }
       } catch (err) {
-        res.status(500).send("interna server error: ", err);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -123,7 +123,7 @@ async function run() {
           res.status(404).send("could not updated");
         }
       } catch (err) {
-        res.status(500).send(`interna server error: ${err}`);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -142,7 +142,25 @@ async function run() {
           res.status(500).send("Internal Server Error");
         }
       } catch (err) {
-        res.status(500).send(`interna server error: ${err}`);
+        res.status(500).send(`internal server error: ${err}`);
+      }
+    });
+
+    // GET ORDER/BOOKING BY ID
+    app.get("/orders/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        console.log(id);
+        const order = await orderCollection.findOne({ _id: ObjectId(id) });
+        console.log(order);
+
+        if (order?._id) {
+          res.json(order);
+        } else {
+          res.status(404).send("No Order Found");
+        }
+      } catch (err) {
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
@@ -176,7 +194,7 @@ async function run() {
           res.status(404).send("could not updated");
         }
       } catch (err) {
-        res.status(500).send(`interna server error: ${err}`);
+        res.status(500).send(`internal server error: ${err}`);
       }
     });
 
