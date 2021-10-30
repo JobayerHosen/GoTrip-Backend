@@ -233,6 +233,24 @@ async function run() {
       }
     });
 
+    //DELETE ORDER/BOOKING API
+    app.delete("/orders/delete/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+
+        if (query) {
+          const result = await orderCollection.deleteOne(query);
+          console.log("deleted", result);
+          res.json(result);
+        } else {
+          res.status(404).send("No Order Found");
+        }
+      } catch (err) {
+        res.status(500).send(`internal server error: ${err}`);
+      }
+    });
+
     //--------------------------------------------------------------------------
   } catch (err) {
     console.log(err);
