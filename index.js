@@ -65,8 +65,9 @@ async function run() {
       try {
         const id = req.params.id;
         const user = await userCollection.findOne({ uid: id });
+        console.log(user);
 
-        if (user.uid == id) {
+        if (user?.uid) {
           res.json(user);
         } else {
           res.status(404).send("No Event Found");
@@ -81,7 +82,7 @@ async function run() {
       try {
         const user = req.body;
 
-        if (!user.email) {
+        if (!user?.email) {
           res.status(403).send("Invalid Input");
         }
 
@@ -101,6 +102,7 @@ async function run() {
       try {
         const id = req.params.id;
         const user = req.body;
+        if (!user?.email) throw new Error("invalid input");
 
         const filter = await userCollection.findOne({ uid: id });
         const options = { upsert: true };
@@ -113,7 +115,7 @@ async function run() {
           },
         };
 
-        if (user.uid === filter.uid) {
+        if (user?.uid === filter?.uid) {
           const result = await userCollection.updateOne(filter, updateDoc, options);
 
           res.json(user);
@@ -129,7 +131,7 @@ async function run() {
     app.post("/orders/addOrder", async (req, res) => {
       try {
         const order = req.body;
-        if (!order.uid) {
+        if (!order?.uid) {
           res.status(403).send("Invalid Input");
         }
 
