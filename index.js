@@ -164,6 +164,41 @@ async function run() {
       }
     });
 
+    // GET ORDERS/BOOKINGS BY USER
+    app.get("/orders/user/:uid", async (req, res) => {
+      try {
+        const id = req.params.uid;
+        console.log(id);
+        const cursor = await orderCollection.find({ uid: id });
+        const orders = await cursor.toArray();
+
+        if (orders.length) {
+          res.json(orders);
+        } else {
+          res.status(404).send("No Order Found");
+        }
+      } catch (err) {
+        res.status(500).send(`internal server error: ${err}`);
+      }
+    });
+
+    //GET ALL ORDERS/BOOKINGS
+    app.get("/orders", async (req, res) => {
+      try {
+        const cursor = orderCollection.find({});
+        const orders = await cursor.toArray();
+        console.log(orders);
+
+        if (orders.length) {
+          res.json(orders);
+        } else {
+          res.status(404).send("No Order Found");
+        }
+      } catch (err) {
+        res.status(500).send(`internal server error: ${err}`);
+      }
+    });
+
     // UPDATE ORDER INFO API
     app.put("/orders/updateOrder/:id", async (req, res) => {
       try {
