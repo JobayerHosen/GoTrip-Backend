@@ -50,7 +50,7 @@ async function run() {
         const id = req.params.id;
         const event = await eventCollection.findOne({ _id: ObjectId(id) });
 
-        if (event._id == id) {
+        if (event?._id) {
           res.json(event);
         } else {
           res.status(404).send("No Event Found");
@@ -140,6 +140,40 @@ async function run() {
           res.json(order);
         } else {
           res.status(500).send("Internal Server Error");
+        }
+      } catch (err) {
+        res.status(500).send(`interna server error: ${err}`);
+      }
+    });
+
+    // UPDATE ORDER INFO API
+    app.put("/orders/updateOrder/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const order = req.body;
+        if (!order?.uid) throw new Error("invalid input");
+
+        const filter = await orderCollection.findOne({ _id: ObjectId(id) });
+
+        const options = { upsert: true };
+
+        const updateDoc = {
+          $set: {
+            status: order.status,
+            phone: order.phone,
+            address: order.address,
+            guests: order.guests,
+            checkIn: order.checkIn,
+            stayTime: order.stayTime,
+          },
+        };
+
+        if (order?.uid === filter?.uid) {
+          const result = await orderCollection.updateOne(filter, updateDoc, options);
+          if (result.acknowledged) res.json(order);
+          else throw new Error("Could Not Update");
+        } else {
+          res.status(404).send("could not updated");
         }
       } catch (err) {
         res.status(500).send(`interna server error: ${err}`);
