@@ -172,7 +172,7 @@ async function run() {
         const cursor = await orderCollection.find({ uid: id });
         const orders = await cursor.toArray();
 
-        if (orders.length) {
+        if (orders) {
           res.json(orders);
         } else {
           res.status(404).send("No Order Found");
@@ -187,9 +187,9 @@ async function run() {
       try {
         const cursor = orderCollection.find({});
         const orders = await cursor.toArray();
-        console.log(orders);
 
-        if (orders.length) {
+        console.log(orders);
+        if (orders) {
           res.json(orders);
         } else {
           res.status(404).send("No Order Found");
