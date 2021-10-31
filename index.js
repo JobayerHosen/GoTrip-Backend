@@ -60,6 +60,24 @@ async function run() {
       }
     });
 
+    //ADD EVENT API
+    app.post("/events/addEvent", async (req, res) => {
+      try {
+        const event = req.body;
+
+        if (!event?.title) {
+          res.status(404).send("invalid input");
+        }
+
+        const result = await eventCollection.insertOne(event);
+        console.log(result);
+        if (result.acknowledged) res.json(event);
+        else throw new Error("Could Not add Event");
+      } catch (err) {
+        res.status(500).send(`internal server error: ${err}`);
+      }
+    });
+
     // GET SINGLE USER API
     app.get("/users/:id", async (req, res) => {
       try {
